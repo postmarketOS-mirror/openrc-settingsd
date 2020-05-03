@@ -17,7 +17,13 @@ PKG_CHECK_MODULES(GLIB, [gio-unix-2.0 >= 2.30
 PKG_CHECK_MODULES(DBUS, [dbus-1])
 PKG_CHECK_MODULES(POLKIT, [polkit-gobject-1])
 PKG_CHECK_MODULES(LIBDAEMON, [libdaemon])
-PKG_CHECK_MODULES(OPENRC, [openrc])
+
+AC_ARG_WITH([openrc], AS_HELP_STRING([--without-openrc], [Disable OpenRC integration]))
+AS_IF([test "x$with_openrc" != "xno"], [
+    AC_MSG_NOTICE([You can optionally disable OpenRC integration with --without-openrc])
+    PKG_CHECK_MODULES(OPENRC, [openrc])
+    AC_DEFINE([HAVE_OPENRC], [1], [Use OpenRC])
+])
 
 AC_PATH_PROG(GDBUS_CODEGEN, gdbus-codegen)
 if test "x$GDBUS_CODEGEN" = x; then

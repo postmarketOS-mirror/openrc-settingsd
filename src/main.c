@@ -26,7 +26,9 @@
 #include <glib.h>
 #include <gio/gio.h>
 
+#if HAVE_OPENRC
 #include <rc.h>
+#endif
 
 #include "hostnamed.h"
 #include "localed.h"
@@ -41,7 +43,9 @@ static gboolean debug = FALSE;
 static gboolean foreground = FALSE;
 static gboolean use_syslog = FALSE;
 static gboolean read_only = FALSE;
+#if HAVE_OPENRC
 static gboolean update_rc_status = FALSE;
+#endif
 static gboolean print_version = FALSE;
 static gchar *ntp_preferred_service = NULL;
 
@@ -56,7 +60,9 @@ static GOptionEntry option_entries[] =
     { "foreground", 0, 0, G_OPTION_ARG_NONE, &foreground, "Do not daemonize", NULL },
     { "read-only", 0, 0, G_OPTION_ARG_NONE, &read_only, "Run in read-only mode", NULL },
     { "ntp-service", 0, 0, G_OPTION_ARG_STRING, &ntp_preferred_service, "Preferred rc NTP service for timedated", NULL },
+#if HAVE_OPENRC
     { "update-rc-status", 0, 0, G_OPTION_ARG_NONE, &update_rc_status, "Force openrc-settingsd rc service to be marked as started", NULL },
+#endif
     { "version", 0, 0, G_OPTION_ARG_NONE, &print_version, "Show version information", NULL },
     { NULL }
 };
@@ -147,12 +153,14 @@ openrc_settingsd_exit (int status)
     pidfile = g_file_new_for_path (PIDFILE);
     g_file_delete (pidfile, NULL, NULL);
 
+#if HAVE_OPENRC
     if (update_rc_status && started) {
         if (status)
             rc_service_mark ("openrc-settingsd", RC_SERVICE_FAILED);
         else
             rc_service_mark ("openrc-settingsd", RC_SERVICE_STOPPED);
     }
+#endif
 
     g_clear_object (&pidfile);
     exit (status);
@@ -183,8 +191,10 @@ openrc_settingsd_component_started ()
     if (!foreground)
         daemon_retval_send (0);
 
+#if HAVE_OPENRC
     if (update_rc_status)
         rc_service_mark ("openrc-settingsd", RC_SERVICE_STARTED);
+#endif
     started = TRUE;
 
   out:

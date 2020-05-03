@@ -28,7 +28,9 @@
 #include <glib.h>
 #include <gio/gio.h>
 
+#if HAVE_OPENRC
 #include <rc.h>
+#endif
 
 #include "copypaste/hwclock.h"
 #include "timedated.h"
@@ -161,6 +163,7 @@ set_timezone (const gchar *_timezone_name,
 static const gchar *
 ntp_service ()
 {
+#if HAVE_OPENRC
     const gchar * const *s = NULL;
     const gchar *service = NULL;
     gchar *runlevel = NULL;
@@ -182,12 +185,16 @@ ntp_service ()
     free (runlevel);
 
     return service;
+#else
+    return NULL;
+#endif
 }
 
 static gboolean
 service_started (const gchar *service,
                  GError **error)
 {
+#if HAVE_OPENRC
     RC_SERVICE state;
 
     g_assert (service != NULL);
@@ -199,12 +206,16 @@ service_started (const gchar *service,
 
     state = rc_service_state (service);
     return state == RC_SERVICE_STARTED || state == RC_SERVICE_STARTING || state == RC_SERVICE_INACTIVE;
+#else
+    return FALSE;
+#endif
 }
 
 static gboolean
 service_disable (const gchar *service,
                  GError **error)
 {
+#if HAVE_OPENRC
     gchar *runlevel = NULL;
     gchar *service_script = NULL;
     const gchar *argv[3] = { NULL, "stop", NULL };
@@ -248,12 +259,16 @@ service_disable (const gchar *service,
     if (service_script != NULL)
         free (service_script);
     return ret;
+#else
+    return FALSE;
+#endif
 }
 
 static gboolean
 service_enable (const gchar *service,
                 GError **error)
 {
+#if HAVE_OPENRC
     gchar *runlevel = NULL;
     gchar *service_script = NULL;
     const gchar *argv[3] = { NULL, "start", NULL };
@@ -297,6 +312,9 @@ service_enable (const gchar *service,
     if (service_script != NULL)
         free (service_script);
     return ret;
+#else
+    return FALSE;
+#endif
 }
 
 struct invoked_set_time {

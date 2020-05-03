@@ -29,7 +29,9 @@
 #include <gio/gio.h>
 #include <polkit/polkit.h>
 
+#if HAVE_OPENRC
 #include <rc.h>
+#endif
 
 #include "hostnamed.h"
 #include "hostname1-generated.h"
@@ -77,11 +79,13 @@ guess_icon_name ()
     gchar *filebuf = NULL;
     gchar *ret = NULL;
 
+#if HAVE_OPENRC
     /* Note that rc_sys() leaks memory :( */
     if (rc_sys() != NULL) {
         ret = g_strdup ("computer-vm");
         goto out;
     }
+#endif
 
 #if defined(__i386__) || defined(__x86_64__)
     /* 
