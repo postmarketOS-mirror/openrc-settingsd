@@ -11,16 +11,13 @@ AC_PREFIX_DEFAULT([/usr])
 
 AC_PROG_MKDIR_P
 AC_SEARCH_LIBS([clock_gettime], [rt], [], [AC_MSG_ERROR([librt not found])])
-PKG_CHECK_MODULES(OPENRC_SETTINGSD,
-                  [gio-unix-2.0 >= 2.30
-                   gio-2.0 >= 2.30
-                   glib-2.0 >= 2.30
-                   dbus-1
-                   polkit-gobject-1
-                   libdaemon
-                   openrc])
-AC_SUBST(OPENRC_SETTINGSD_CFLAGS)
-AC_SUBST(OPENRC_SETTINGSD_LIBS)
+PKG_CHECK_MODULES(GLIB, [gio-unix-2.0 >= 2.30
+                         gio-2.0 >= 2.30
+                         glib-2.0 >= 2.30])
+PKG_CHECK_MODULES(DBUS, [dbus-1])
+PKG_CHECK_MODULES(POLKIT, [polkit-gobject-1])
+PKG_CHECK_MODULES(LIBDAEMON, [libdaemon])
+PKG_CHECK_MODULES(OPENRC, [openrc])
 
 AC_PATH_PROG(GDBUS_CODEGEN, gdbus-codegen)
 if test "x$GDBUS_CODEGEN" = x; then

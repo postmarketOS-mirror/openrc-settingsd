@@ -70,12 +70,21 @@ AM_CPPFLAGS = \
 	-DPKGDATADIR=\""$(pkgdatadir)"\" \
 	-DPIDFILE=\""$(pidfile)"\" \
 	-DENV_UPDATE=\""$(prefix)/sbin/env-update"\" \
-	$(OPENRC_SETTINGSD_CFLAGS) \
+	$(GLIB_CFLAGS) \
+	$(DBUS_CFLAGS) \
+	$(POLKIT_CFLAGS) \
+	$(LIBDAEMON_CFLAGS) \
+	$(OPENRC_CFLAGS) \
 	-I$(top_srcdir)/src \
 	-I$(top_builddir)/src \
 	$(NULL)
 
-LDADD = $(OPENRC_SETTINGSD_LIBS)
+LDADD = \
+	$(GLIB_LIBS) \
+	$(DBUS_LIBS) \
+	$(POLKIT_LIBS) \
+	$(LIBDAEMON_LIBS) \
+	$(OPENRC_LIBS)
 
 libexec_PROGRAMS = openrc-settingsd
 
