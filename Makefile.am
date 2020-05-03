@@ -123,31 +123,28 @@ nodist_openrc_settingsd_SOURCES = \
 	$(NULL)
 
 $(hostnamed_built_sources) : data/org.freedesktop.hostname1.xml
-	$(AM_V_GEN)( pushd "$(srcdir)/src" > /dev/null; \
+	$(AM_V_GEN)( cd "$(srcdir)/src" > /dev/null; \
 	$(GDBUS_CODEGEN) \
 	--interface-prefix org.freedesktop. \
 	--c-namespace OpenrcSettingsdHostnamed \
 	--generate-c-code hostname1-generated \
-	$(abs_srcdir)/data/org.freedesktop.hostname1.xml; \
-	popd > /dev/null )
+	$(abs_srcdir)/data/org.freedesktop.hostname1.xml )
 
 $(localed_built_sources) : data/org.freedesktop.locale1.xml
-	$(AM_V_GEN)( pushd "$(srcdir)/src" > /dev/null; \
+	$(AM_V_GEN)( cd "$(srcdir)/src" > /dev/null; \
 	$(GDBUS_CODEGEN) \
 	--interface-prefix org.freedesktop. \
 	--c-namespace OpenrcSettingsdLocaled \
 	--generate-c-code locale1-generated \
-	$(abs_srcdir)/data/org.freedesktop.locale1.xml; \
-	popd > /dev/null )
+	$(abs_srcdir)/data/org.freedesktop.locale1.xml )
 
 $(timedated_built_sources) : data/org.freedesktop.timedate1.xml
-	$(AM_V_GEN)( pushd "$(srcdir)/src" > /dev/null; \
+	$(AM_V_GEN)( cd "$(srcdir)/src" > /dev/null; \
 	$(GDBUS_CODEGEN) \
 	--interface-prefix org.freedesktop. \
 	--c-namespace OpenrcSettingsdTimedated \
 	--generate-c-code timedate1-generated \
-	$(abs_srcdir)/data/org.freedesktop.timedate1.xml; \
-	popd > /dev/null )
+	$(abs_srcdir)/data/org.freedesktop.timedate1.xml )
 
 BUILT_SOURCES = \
 	$(hostnamed_built_sources) \
