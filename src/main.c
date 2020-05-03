@@ -211,7 +211,6 @@ main (gint argc, gchar *argv[])
     GMainLoop *loop = NULL;
     pid_t pid;
 
-    g_type_init ();
     g_log_set_default_handler (log_handler, NULL);
 
     option_context = g_option_context_new ("- system settings D-Bus service for OpenRC");

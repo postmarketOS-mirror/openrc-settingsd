@@ -92,13 +92,9 @@ gboolean
 check_polkit_finish (GAsyncResult *res,
                      GError **error)
 {
-    GSimpleAsyncResult *simple;
+    g_return_val_if_fail (g_task_is_valid (res, NULL), FALSE);
 
-    simple = G_SIMPLE_ASYNC_RESULT (res);
-    if (g_simple_async_result_propagate_error (simple, error))
-        return FALSE;
-
-    return g_simple_async_result_get_op_res_gboolean (simple);
+    return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 static void
@@ -108,23 +104,23 @@ check_polkit_authorization_cb (GObject *source_object,
 {
     struct check_polkit_data *data;
     PolkitAuthorizationResult *result;
-    GSimpleAsyncResult *simple;
+    GTask *task;
     GError *err = NULL;
 
     data = (struct check_polkit_data *) _data;
     if ((result = polkit_authority_check_authorization_finish (data->authority, res, &err)) == NULL) {
-        g_simple_async_report_take_gerror_in_idle (NULL, data->callback, data->user_data, err);
+        g_task_report_error (NULL, data->callback, data->user_data, NULL, err);
         goto out;
     }
  
     if (!polkit_authorization_result_get_is_authorized (result)) {
-        g_simple_async_report_error_in_idle (NULL, data->callback, data->user_data, POLKIT_ERROR, POLKIT_ERROR_NOT_AUTHORIZED, "Authorizing for '%s': not authorized", data->action_id);
+        g_task_report_new_error (NULL, data->callback, data->user_data, NULL, POLKIT_ERROR, POLKIT_ERROR_NOT_AUTHORIZED, "Authorizing for '%s': not authorized", data->action_id);
         goto out;
     }
-    simple = g_simple_async_result_new (NULL, data->callback, data->user_data, check_polkit_async);
-    g_simple_async_result_set_op_res_gboolean (simple, TRUE);
-    g_simple_async_result_complete_in_idle (simple);
-    g_object_unref (simple);
+    task = g_task_new (NULL, NULL, data->callback, data->user_data);
+    g_task_set_source_tag (task, check_polkit_async);
+    g_task_return_boolean (task, TRUE);
+    g_clear_object (&task);
 
   out:
     check_polkit_data_free (data);
@@ -142,13 +138,13 @@ check_polkit_authority_cb (GObject *source_object,
 
     data = (struct check_polkit_data *) _data;
     if ((data->authority = polkit_authority_get_finish (res, &err)) == NULL) {
-        g_simple_async_report_take_gerror_in_idle (NULL, data->callback, data->user_data, err);
+        g_task_report_error (NULL, data->callback, data->user_data, NULL, err);
         check_polkit_data_free (data);
         return;
     }
     if (data->unique_name == NULL || data->action_id == NULL || 
         (data->subject = polkit_system_bus_name_new (data->unique_name)) == NULL) {
-        g_simple_async_report_error_in_idle (NULL, data->callback, data->user_data, POLKIT_ERROR, POLKIT_ERROR_FAILED, "Authorizing for '%s': failed sanity check", data->action_id);
+        g_task_report_new_error (NULL, data->callback, data->user_data, NULL, POLKIT_ERROR, POLKIT_ERROR_FAILED, "Authorizing for '%s': failed sanity check", data->action_id);
         check_polkit_data_free (data);
         return;
     }
