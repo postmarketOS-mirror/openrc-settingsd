@@ -26,6 +26,7 @@
 
 #include <dbus/dbus-protocol.h>
 #include <glib.h>
+#include <glib/gstdio.h>
 #include <gio/gio.h>
 
 #if HAVE_OPENRC
@@ -135,6 +136,9 @@ set_timezone (const gchar *_timezone_name,
         g_prefix_error (error, "Unable to write '%s':", timezone_filename);
         goto out;
     }
+    if(g_chmod (timezone_filename, 0664) != 0) {
+        g_set_error (error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, "Unable to set 0664 permissions on timezone file '%s'", timezone_filename);
+    }
 
     localtime_filename = g_file_get_path (localtime_file);
     localtime2_filename = g_strdup_printf (DATADIR "/zoneinfo/%s", _timezone_name);
@@ -157,6 +161,9 @@ set_timezone (const gchar *_timezone_name,
         if (!g_file_replace_contents (localtime_file, filebuf, length, NULL, FALSE, 0, NULL, NULL, error)) {
             g_prefix_error (error, "Unable to write '%s':", localtime_filename);
             goto out;
+        }
+        if(g_chmod (localtime_filename, 0664) != 0) {
+            g_set_error (error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, "Unable to set 0664 permissions on localtime file '%s'", localtime_filename);
         }
     } else {
         // File doesn't exist yet -> make a new symlink
