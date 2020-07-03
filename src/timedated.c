@@ -139,13 +139,31 @@ set_timezone (const gchar *_timezone_name,
     localtime_filename = g_file_get_path (localtime_file);
     localtime2_filename = g_strdup_printf (DATADIR "/zoneinfo/%s", _timezone_name);
     localtime2_file = g_file_new_for_path (localtime2_filename);
-    if (!g_file_load_contents (localtime2_file, NULL, &filebuf, &length, NULL, error)) {
-        g_prefix_error (error, "Unable to read '%s':", localtime2_filename);
-        goto out;
-    }
-    if (!g_file_replace_contents (localtime_file, filebuf, length, NULL, FALSE, 0, NULL, NULL, error)) {
-        g_prefix_error (error, "Unable to write '%s':", localtime_filename);
-        goto out;
+
+    if (g_file_test(localtime_filename, G_FILE_TEST_IS_SYMLINK)) {
+        if (!g_file_delete (localtime_file, NULL, error)) {
+            g_prefix_error (error, "Unable to delete file to make new symlink %s:", localtime_filename);
+            goto out;
+        }
+        if (!g_file_make_symbolic_link (localtime_file, localtime2_filename, NULL, error)) {
+            g_prefix_error (error, "Unable to create symlink %s -> %s:", localtime_filename, localtime2_filename);
+            goto out;
+        }
+    } else if (g_file_test(localtime_filename, G_FILE_TEST_IS_REGULAR)) {
+        if (!g_file_load_contents (localtime2_file, NULL, &filebuf, &length, NULL, error)) {
+            g_prefix_error (error, "Unable to read '%s':", localtime2_filename);
+            goto out;
+        }
+        if (!g_file_replace_contents (localtime_file, filebuf, length, NULL, FALSE, 0, NULL, NULL, error)) {
+            g_prefix_error (error, "Unable to write '%s':", localtime_filename);
+            goto out;
+        }
+    } else {
+        // File doesn't exist yet -> make a new symlink
+        if (!g_file_make_symbolic_link (localtime_file, localtime2_filename, NULL, error)) {
+            g_prefix_error (error, "Unable to create symlink %s -> %s:", localtime_filename, localtime2_filename);
+            goto out;
+        }
     }
     ret = TRUE;
 
