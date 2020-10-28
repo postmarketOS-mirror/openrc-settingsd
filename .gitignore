@@ -22,6 +22,10 @@
 /src/hostname1-generated.[ch]
 /src/locale1-generated.[ch]
 /src/timedate1-generated.[ch]
+/data/init.d/openrc-settingsd
+/data/org.freedesktop.hostname1.service
+/data/org.freedesktop.locale1.service
+/data/org.freedesktop.timedate1.service
 
 # Relative rules
 *.o
