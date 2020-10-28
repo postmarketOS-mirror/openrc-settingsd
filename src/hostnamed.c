@@ -331,7 +331,7 @@ on_handle_set_icon_name_authorized_cb (GObject *source_object,
     }
 
     G_LOCK (machine_info);
-    /* Don't allow a null pretty hostname */
+    /* Don't allow a null icon name */
     if (data->name == NULL)
         data->name = g_strdup ("");
 
