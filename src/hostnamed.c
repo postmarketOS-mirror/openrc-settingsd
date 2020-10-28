@@ -310,7 +310,7 @@ on_handle_set_pretty_hostname (OpenrcSettingsdHostnamedHostname1 *hostname1,
         data = g_new0 (struct invoked_name, 1);
         data->invocation = invocation;
         data->name = g_strdup (name);
-        check_polkit_async (g_dbus_method_invocation_get_sender (invocation), "org.freedesktop.hostname1.set-machine-info", user_interaction, on_handle_set_pretty_hostname_authorized_cb, data);
+        check_polkit_async (g_dbus_method_invocation_get_sender (invocation), "org.freedesktop.hostname1.set-static-hostname", user_interaction, on_handle_set_pretty_hostname_authorized_cb, data);
     }
 
     return TRUE; /* Always return TRUE to indicate signal has been handled */
