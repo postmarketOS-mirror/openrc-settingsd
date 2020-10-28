@@ -488,6 +488,23 @@ shell_parser_set_variable (ShellParser *parser,
         ret = TRUE;
     } else {
         if (add_if_unset) {
+            GList *previous;
+            struct ShellEntry *previous_entry = NULL;
+
+            /* We need to add a separator (\n) between two items if there isn't one already. */
+            if ((previous = g_list_last(parser->entry_list)) != NULL) {
+                previous_entry = previous->data;
+            }
+            if (previous_entry && previous_entry->type != SHELL_ENTRY_TYPE_SEPARATOR) {
+                struct ShellEntry *separator_entry;
+
+                g_debug ("Adding separator entry");
+                separator_entry = g_new0 (struct ShellEntry, 1);
+                separator_entry->type = SHELL_ENTRY_TYPE_SEPARATOR;
+                separator_entry->string = g_strdup ("\n");
+                parser->entry_list = g_list_append (parser->entry_list, separator_entry);
+            }
+
             found_entry = g_new0 (struct ShellEntry, 1);
             found_entry->type = SHELL_ENTRY_TYPE_ASSIGNMENT;
             found_entry->variable = g_strdup (variable);
