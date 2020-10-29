@@ -680,19 +680,6 @@ hostnamed_init (gboolean _read_only)
         err = NULL;
     }
 
-    icon_name = shell_source_var (machine_info_file, "${ICON_NAME}", &err);
-    if (icon_name == NULL)
-        icon_name = g_strdup ("");
-    if (err != NULL) {
-        g_debug ("%s", err->message);
-        g_error_free (err);
-        err = NULL;
-    }
-    if (icon_name == NULL || *icon_name == 0) {
-        g_free (icon_name);
-        icon_name = guess_icon_name ();
-    }
-
     chassis = shell_source_var (machine_info_file, "${CHASSIS}", &err);
     if (chassis == NULL)
         chassis = g_strdup ("");
@@ -704,6 +691,19 @@ hostnamed_init (gboolean _read_only)
     if (chassis == NULL || *chassis == 0) {
         g_free (chassis);
         chassis = guess_chassis ();
+    }
+
+    icon_name = shell_source_var (machine_info_file, "${ICON_NAME}", &err);
+    if (icon_name == NULL)
+        icon_name = g_strdup ("");
+    if (err != NULL) {
+        g_debug ("%s", err->message);
+        g_error_free (err);
+        err = NULL;
+    }
+    if (icon_name == NULL || *icon_name == 0) {
+        g_free (icon_name);
+        icon_name = guess_icon_name ();
     }
 
     deployment = shell_source_var (machine_info_file, "${DEPLOYMENT}", &err);
