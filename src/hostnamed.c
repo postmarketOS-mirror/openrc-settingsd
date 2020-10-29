@@ -95,10 +95,10 @@ guess_icon_name ()
        Taken with a few minor changes from systemd's hostnamed.c,
        copyright 2011 Lennart Poettering.
 
-       See the SMBIOS Specification 2.7.1 section 7.4.1 for
+       See the SMBIOS Specification 3.4.0 section 7.4.1 for
        details about the values listed here:
 
-       http://www.dmtf.org/sites/default/files/standards/documents/DSP0134_2.7.1.pdf
+       https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.4.0.pdf
     */
 
     if (g_file_get_contents ("/sys/class/dmi/id/chassis_type", &filebuf, NULL, NULL)) {
@@ -108,18 +108,30 @@ guess_icon_name ()
         case 0x5: /* Pizza Box */
         case 0x6: /* Mini Tower */
         case 0x7: /* Tower */
+        case 0xD: /* All in One */
             ret = g_strdup ("computer-desktop");
             goto out;
+        case 0x8: /* Portable */
         case 0x9: /* Laptop */
         case 0xA: /* Notebook */
         case 0xE: /* Sub Notebook */
             ret = g_strdup ("computer-laptop");
+            goto out;
+        case 0xB: /* Hand Held */
+            ret = g_strdup ("computer-handset");
             goto out;
         case 0x11: /* Main Server Chassis */
         case 0x17: /* Rack Mount Chassis */
         case 0x1C: /* Blade */
         case 0x1D: /* Blade Enclosure */
             ret = g_strdup ("computer-server");
+            goto out;
+        case 0x1E: /* Tablet */
+            ret = g_strdup ("computer-tablet");
+            goto out;
+        case 0x1F: /* Convertible */
+        case 0x20: /* Detachable */
+            ret = g_strdup ("computer-convertible");
             goto out;
         }
     }
