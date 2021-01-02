@@ -1,14 +1,5 @@
 OpenRC-settingsd provides an implementation of the the hostnamed, localed,
-and timedated D-Bus services for OpenRC-based systems - in particular, for
-typical installations of Gentoo Linux.
-
-It is maintained by Gentoo's GNOME desktop team, which can be contacted
-via gnome@gentoo.org, or in #gentoo-desktop on Freenode IRC.
-
-Homepage: http://gnome.gentoo.org/openrc-settingsd.xml
-
-Bugs should be reported to Gentoo Bugzilla (https://bugs.gentoo.org/)
-using "GNOME" as the component.
+and timedated D-Bus services for OpenRC-based systems.
 
 Hostnamed:
 
