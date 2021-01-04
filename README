@@ -1,6 +1,11 @@
 OpenRC-settingsd provides an implementation of the the hostnamed, localed,
 and timedated D-Bus services for OpenRC-based systems.
 
+This project was originally maintained by Gentoo's GNOME desktop team, but did
+not have activity since the 1.0.1 release in 2012. After several unsuccessful
+attempts to upstream patches, postmarketOS developers decided to maintain a
+fork at: https://gitlab.com/postmarketOS/openrc-settingsd
+
 Hostnamed:
 
  See http://www.freedesktop.org/wiki/Software/systemd/hostnamed for the D-Bus
