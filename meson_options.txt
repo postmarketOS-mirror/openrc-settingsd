@@ -1,1 +1,2 @@
 option('openrc', type : 'feature', value : 'enabled')
+option('pidfile', type : 'string', value : '/var/run/openrc-settingsd.pid', description : 'pid filename')

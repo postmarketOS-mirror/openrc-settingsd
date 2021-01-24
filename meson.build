@@ -2,6 +2,7 @@ project('openrc-settingsd', 'c',
   version : '1.0.1',
   license : 'GPL-2.0-or-later',
   default_options : ['warning_level=3'])
+add_project_arguments('-Wno-unused-parameter', language : 'c')
 
 gnome = import('gnome')
 
@@ -45,7 +46,7 @@ conf_data.set('SYSCONFDIR', '"' + get_option('prefix') / get_option('sysconfdir'
 conf_data.set('DATADIR', '"' + get_option('prefix') / get_option('datadir') + '"')
 conf_data.set('LIBEXECDIR', '"' + get_option('prefix') / get_option('libexecdir') + '"')
 conf_data.set('PKGDATADIR', '"' + get_option('prefix') / get_option('datadir') / meson.project_name() + '"')
-conf_data.set('PIDFILE', '"/var/run/' + meson.project_name() + '.pid"')
+conf_data.set('PIDFILE', '"' + get_option('pidfile') + '"')
 conf_data.set('ENV_UPDATE', '"/usr/sbin/env-update"')
 
 conf_data.set('PACKAGE_STRING', '"' + meson.project_name() + ' ' + meson.project_version() + '"')
@@ -87,6 +88,7 @@ install_data(
 
 conf_dbus_service = configuration_data()
 conf_dbus_service.set('libexecdir', get_option('prefix') / get_option('libexecdir'))
+conf_dbus_service.set('pidfile', get_option('pidfile'))
 
 dbussystemservicesdir = dbus_dep.get_pkgconfig_variable('system_bus_services_dir')
 configure_file(
@@ -110,7 +112,7 @@ configure_file(
 
 install_data(
   'data/openrc-settingsd.conf',
-  install_dir : get_option('prefix') / get_option('sysconfdir') / 'dbus-1' / 'system.d',
+  install_dir : get_option('sysconfdir') / 'dbus-1' / 'system.d',
 )
 
 install_data(
@@ -120,6 +122,23 @@ install_data(
     'data/org.freedesktop.timedate1.policy',
   ],
   install_dir : polkit_dep.get_pkgconfig_variable('actiondir')
+)
+
+install_data(
+  'data/conf.d/openrc-settingsd',
+  install_dir : get_option('sysconfdir') / 'conf.d',
+)
+
+# install_dir cannot be used in configure_file here, see https://github.com/mesonbuild/meson/issues/7675
+initd_file = configure_file(
+  input : 'data/init.d/openrc-settingsd.in',
+  output : 'openrc-settingsd.initd',
+  configuration : conf_dbus_service,
+)
+install_data(
+  initd_file,
+  rename : 'openrc-settingsd',
+  install_dir : get_option('sysconfdir') / 'init.d',
 )
 
 install_man('data/openrc-settingsd.8')
