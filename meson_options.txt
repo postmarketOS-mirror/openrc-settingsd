@@ -1,0 +1,1 @@
+option('openrc', type : 'feature', value : 'enabled')
