@@ -69,12 +69,12 @@ executable(
     libdaemon_dep,
   ],
   install : true,
-  install_dir : get_option('prefix') / get_option('libexecdir'),
+  install_dir : get_option('libexecdir'),
 )
 
 install_data(
   'data/kbd-model-map',
-  install_dir : get_option('prefix') / get_option('datadir') / meson.project_name(),
+  install_dir : get_option('datadir') / meson.project_name(),
 )
 
 install_data(
