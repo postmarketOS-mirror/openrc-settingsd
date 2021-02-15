@@ -1,14 +1,5 @@
 OpenRC-settingsd provides an implementation of the the hostnamed, localed,
-and timedated D-Bus services for OpenRC-based systems - in particular, for
-typical installations of Gentoo Linux.
-
-It is maintained by Gentoo's GNOME desktop team, which can be contacted
-via gnome@gentoo.org, or in #gentoo-desktop on Freenode IRC.
-
-Homepage: http://gnome.gentoo.org/openrc-settingsd.xml
-
-Bugs should be reported to Gentoo Bugzilla (https://bugs.gentoo.org/)
-using "GNOME" as the component.
+and timedated D-Bus services for OpenRC-based systems.
 
 Hostnamed:
 
@@ -39,7 +30,7 @@ Localed:
 
  X11 keyboard options are set in /etc/X11/xorg.conf.d/30-keyboard.conf
  (falling back to 00-keyboard.conf if it exists and 30-keyboard.conf does
- not). See http://www.gentoo.org/doc/en/xorg-config.xml for configuration
+ not). See https://wiki.gentoo.org/wiki/Xorg/Guide for configuration
  information.
 
 Timedated:
@@ -65,3 +56,5 @@ baz='Let'\''s go!'
 
 If OpenRC-settingsd fails to parse a settings file, it will refuse to modify
 it.
+
+This project was originally maintained by Gentoo's GNOME desktop team.
